@@ -29,7 +29,18 @@ def day_of_week(year: int, month: int, date: int) -> str:
 
 def mon_max(month:int, year:int) -> int:
     "returns the maximum day for a given month. Includes leap year check"
-    ...
+
+    if month == 2:
+        if leap_year(year):
+            return 29
+        return 28
+
+    days = {
+        1:31, 3:31, 5:31, 7:31, 8:31, 10:31, 12:31,
+        4:30, 6:30, 9:30, 11:30
+    }
+
+    return days[month]
 
 def after(date: str) -> str:
     '''
@@ -86,15 +97,75 @@ def usage():
 
 def leap_year(year: int) -> bool:
     "return True if the year is a leap year"
-    ...
+
+    if year % 400 == 0:
+        return True
+
+    if year % 100 == 0:
+        return False
+
+    if year % 4 == 0:
+        return True
+
+    return False
 
 def valid_date(date: str) -> bool:
-    "check validity of date and return True if valid"
-    ...
+    try:
+        year_str, month_str, day_str = date.split('-')
+
+        # Must be YYYY-MM-DD
+        if len(year_str) != 4:
+            return False
+
+        if len(month_str) != 2:
+            return False
+
+        if len(day_str) != 2:
+            return False
+
+        year = int(year_str)
+        month = int(month_str)
+        day = int(day_str)
+
+        if month < 1 or month > 12:
+            return False
+
+        if day < 1:
+            return False
+
+        if day > mon_max(month, year):
+            return False
+
+        return True
+
+    except:
+        return False
 
 def day_count(start_date: str, stop_date: str) -> int:
     "Loops through range of dates, and returns number of weekend days"
-    ...
+
+    count = 0
+    current = start_date
+
+    while True:
+
+        year, month, day = current.split('-')
+
+        dow = day_of_week(
+            int(year),
+            int(month),
+            int(day)
+        )
+
+        if dow == 'sun' or dow == 'sat':
+            count += 1
+
+        if current == stop_date:
+            break
+
+        current = after(current)
+
+    return count
 
 if __name__ == "__main__":
     ...
